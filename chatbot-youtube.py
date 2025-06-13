@@ -1,4 +1,5 @@
 import streamlit as st
+from llm import get_aimessage
 
 st.set_page_config(page_title='크리에이터를 위한 유튜브 가이드라인 챗봇', page_icon='🎥')
 
@@ -12,7 +13,7 @@ if inputchat := st.chat_input(placeholder="유튜브 크리에이터 가이드�
     with st.chat_message("user"):
         st.write(f"{inputchat}")
 
-    with st.chat_message("ai"):
-        st.write("안녕하세요")
+    aimessage = get_aimessage(inputchat)
+    with st.chat_message("ai"):        
+        st.write(aimessage)
 
-        
