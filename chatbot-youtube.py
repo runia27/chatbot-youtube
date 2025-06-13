@@ -6,14 +6,23 @@ st.set_page_config(page_title='크리에이터를 위한 유튜브 가이드라�
 st.title('유튜브 가이드라인 챗봇 🎥')
 st.markdown("### for 'YouTube 크리에이터'")
 
+if 'message_list' not in st.session_state:
+    st.session_state.message_list = []
 
-query = "다른 나라 언어를 자막으로 넣는 방법을 알려주세요."
+for i in st.session_state.message_list:
+    with st.chat_message(i['role']):
+        st.write(i['content'])
+
 
 if inputchat := st.chat_input(placeholder="유튜브 크리에이터 가이드라인에 대해 질문해주세요"):
-    with st.chat_message("user"):
+    with st.chat_message("user"):    
         st.write(f"{inputchat}")
+    st.session_state.message_list.append({'role': 'user', 'content': inputchat})
 
-    aimessage = get_aimessage(inputchat)
-    with st.chat_message("ai"):        
-        st.write(aimessage)
+    with st.spinner("답변을 생성하는 중입니다."):
+        aimessage = get_aimessage(inputchat)
+        
+        with st.chat_message("ai"):
+            st.write(aimessage)
+        st.session_state.message_list.append({'role': 'ai', 'content': aimessage})
 
