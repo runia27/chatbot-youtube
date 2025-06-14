@@ -1,3 +1,4 @@
+import uuid
 import streamlit as st
 from llm import stream_get_aimessage
 
@@ -5,6 +6,16 @@ st.set_page_config(page_title='크리에이터를 위한 유튜브 가이드라�
 
 st.title('유튜브 가이드라인 챗봇 🎥')
 st.markdown("### for 'YouTube 크리에이터'")
+
+
+if 'session_id' in st.query_params:
+    session_id = st.query_params.session_id
+else:
+    session_id = str(uuid.uuid4())
+    st.query_params.update({"session_id":session_id})
+
+if 'session_id' not in st.session_state:
+    st.session_state.session_id = session_id    
 
 if 'message_list' not in st.session_state:
     st.session_state.message_list = []
