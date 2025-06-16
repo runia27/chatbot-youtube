@@ -1,3 +1,4 @@
+import json
 import os
 
 from dotenv import load_dotenv
@@ -68,7 +69,25 @@ def get_history_retriever(llm, retriever):
     )
     return history_retriever
 
+
+def load_dictionary_from_file(path='keyword_dictionary.json'):
+    with open(path, 'r', encoding='utf-8') as file:
+        return json.load(file) 
+    
+## 문자열로 
+def bulid_dictionay_text(dictionary: dict) -> str:
+
+    dictionary_text = '\n'.join([
+        f"{k} ({', '.join(v['tags'])}): {v['definition']} [출처: {v['source']}])" 
+        for k, v in dictionary.items()
+    ])    
+    return dictionary_text
+
+
 def get_qa_prompt():
+    keyword_dictionary = load_dictionary_from_file()    
+    dictionary_text = bulid_dictionay_text(keyword_dictionary)
+
     prompt = ('''
 [Identity]
 - 당신은 유튜브 콘텐츠 정책과 가이드라인에 정통한 전문가입니다.           
@@ -88,7 +107,7 @@ answer:
         ("system", prompt),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
-    ])
+    ]).partial(dictionary_text=dictionary_text)
     return qa_prompt
 
 
